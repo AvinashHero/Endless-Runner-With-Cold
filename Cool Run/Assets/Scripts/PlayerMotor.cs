@@ -11,7 +11,7 @@ public class PlayerMotor : MonoBehaviour
 
     //Movement
     private CharacterController controller;
-    private float jumpForce = 4f;
+    private float jumpForce = 6f;
     private float gravity = 12.0f;
     private float verticalVelocity;
     
@@ -141,11 +141,11 @@ public class PlayerMotor : MonoBehaviour
     private bool IsGrounded()
     {
         Ray groundRay = new Ray(new Vector3(controller.bounds.center.x,
-            (controller.bounds.center.y - controller.bounds.extents.y) + 0.3f,
+            (controller.bounds.center.y - controller.bounds.extents.y) + 0.2f,
             controller.bounds.center.z),
             Vector3.down);
 
-        return Physics.Raycast(groundRay, 0.3f + 0.1f);
+        return Physics.Raycast(groundRay, 0.2f + 0.1f);
     }
 
     //Set the Avatar for Player
@@ -182,12 +182,22 @@ public class PlayerMotor : MonoBehaviour
         isRunning = false;
         GameManager.Instance.OnDeath();
     }
+
+    private void SideCrash(bool goingRight)
+    {
+        desiredLane += (goingRight) ? -1 : 1;
+        desiredLane = Mathf.Clamp(desiredLane, 0, 2);
+    }
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         switch(hit.gameObject.tag)
         {
             case "Obstacle":
                 Crash();
+                break;
+
+            case "sideObstacle":
+                SideCrash(desiredLane!=0);
                 break;
         }
     }

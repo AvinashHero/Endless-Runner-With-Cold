@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -19,6 +20,12 @@ public class GameManager : MonoBehaviour
     //Death menu
     public Animator deathAnimator;
     public Text deathScoreText, deathCoin;
+
+
+    //Pause Menu
+    public Animator pauseAnimation;
+    private static bool isGamePause = false;
+    public GameObject pauseMenuUI;
 
     private void Awake()
     {
@@ -44,7 +51,7 @@ public class GameManager : MonoBehaviour
             menuTitleAnim.SetTrigger("Hide");
         }
 
-        if(isGameStarted && !IsDead)
+        if(isGameStarted && !IsDead && !isGamePause)
         {
             score += (Time.deltaTime * modifierScore);
             if(lastScore != (int)score)
@@ -72,9 +79,40 @@ public class GameManager : MonoBehaviour
 
     public void OnPlayButton()
     {
+        Time.timeScale = 1f;
         UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
     }
 
+    public void OnPauseButton()
+    {
+        if (isGamePause)
+            OnResume();
+        else
+            OnPause();
+        
+
+    }
+
+    public void OnResume()
+    {
+        isGamePause = false;
+        //pauseAnimation.SetTrigger("onPause");
+        pauseMenuUI.SetActive(false);
+        Time.timeScale = 1f;
+    }
+
+    private void OnPause()
+    {
+        isGamePause = true;
+        //pauseAnimation.SetTrigger("onPause");
+        pauseMenuUI.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void OnQuit()
+    {
+        Application.Quit();
+    }
     public void OnDeath()
     {
         IsDead = true;
