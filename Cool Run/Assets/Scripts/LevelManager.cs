@@ -7,8 +7,8 @@ public class LevelManager : MonoBehaviour
     public bool SHOW_COLLIDER = true; //$$
 
     // Level of spawning
-    private const float DISTANCE_BEFORE_SPAWN = 100.0f;
-    private const int INITIAL_SEGMENTS = 10;
+    private const float DISTANCE_BEFORE_SPAWN = 50.0f;
+    private const int INITIAL_SEGMENTS = 6;
     private const int INITIAL_TRANSITION_SEGMENTS = 2;
     private const int MAXIMUM_SEGMENTS_ON_SCREEN = 15;
     private Transform cameraContainer;

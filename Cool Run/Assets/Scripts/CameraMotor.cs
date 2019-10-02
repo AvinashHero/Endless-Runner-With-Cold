@@ -5,20 +5,20 @@ using UnityEngine;
 public class CameraMotor : MonoBehaviour
 {
     public Transform lookAt; // Player //object we are looking at
-    public Vector3 offset = new Vector3(0, 6.0f, -7.0f);
-    public Vector3 rotation = new Vector3(35, 0, 0);
-
-    public bool IsMoving { set; get; }
+    public Vector3 offset;
+    public Vector3 rotation;
+    public float smoothSpeed = 10f;
+    
     private void LateUpdate()
     {
-        if (!IsMoving)
-            return;
-
+       
         Vector3 desiredPosition = lookAt.position + offset;
-        desiredPosition.x = 0;
-        transform.position = Vector3.Lerp(transform.position, desiredPosition, 0.1f);
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(rotation),0.1f);
 
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition,smoothSpeed * Time.deltaTime);
+        transform.position = smoothedPosition;
 
+        Quaternion smoothedRotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(rotation), smoothSpeed * Time.deltaTime);
+        transform.rotation = smoothedRotation;
+        
     }
 }

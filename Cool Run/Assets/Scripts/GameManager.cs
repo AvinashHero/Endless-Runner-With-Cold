@@ -12,8 +12,8 @@ public class GameManager : MonoBehaviour
     private PlayerMotor motor;
 
     //UI and the UI fields
-    public Animator canvasGroup,menuTitleAnim;
-    public Text scoreText, coinText, modifierText, highScore;
+    public Animator canvasGroup;
+    public Text scoreText, coinText, modifierText;
     private float score, coinScore, modifierScore;
     private int lastScore;
 
@@ -35,31 +35,43 @@ public class GameManager : MonoBehaviour
         scoreText.text = scoreText.text = score.ToString("0");
         coinText.text = coinScore.ToString("0");
         modifierText.text = "x" + modifierScore.ToString("0.0");
-        highScore.text = PlayerPrefs.GetInt("Hiscore").ToString();
+        //highScore.text = PlayerPrefs.GetInt("Hiscore").ToString();
 
     }
 
     private void Update()
     {
-        if(MobileInput.Instance.Tap && !isGameStarted)
+        if(!isGameStarted)
         {
             isGameStarted = true;
             motor.StartGame();
             FindObjectOfType<GleciarSpawn>().IsScrolling = true;
-            FindObjectOfType<CameraMotor>().IsMoving = true;
+           
             canvasGroup.SetTrigger("Show");
-            menuTitleAnim.SetTrigger("Hide");
+            //menuTitleAnim.SetTrigger("Hide");
         }
 
-        if(isGameStarted && !IsDead && !isGamePause)
+        if(isGameStarted && !IsDead)
         {
+            
             score += (Time.deltaTime * modifierScore);
             if(lastScore != (int)score)
             {
                 lastScore = (int)score;
                 scoreText.text = score.ToString("0");
             }
-        }   
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!IsDead)
+                OnPauseButton();
+            
+            if (IsDead)
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Home");
+            
+        }
+            
     }
 
     public void GetCoin()
@@ -81,6 +93,13 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
+    }
+
+    public void OnHomeButton()
+    {
+        Time.timeScale = 1f;
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Home");
+        
     }
 
     public void OnPauseButton()
@@ -107,12 +126,10 @@ public class GameManager : MonoBehaviour
         //pauseAnimation.SetTrigger("onPause");
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
+
     }
 
-    public void OnQuit()
-    {
-        Application.Quit();
-    }
+    
     public void OnDeath()
     {
         IsDead = true;
@@ -131,7 +148,10 @@ public class GameManager : MonoBehaviour
 
             PlayerPrefs.SetInt("Hiscore", (int)s);
         }
-            
+
+        
+
+
     }
 }
 
